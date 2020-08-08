@@ -1,0 +1,11 @@
+<div>
+  <nge-monaco-viewer [language]="'javascript'" [linenums]="'1'" [highlights]="'2'" [code]="code"></nge-monaco-viewer>
+  <nge-monaco-editor
+    style="--editor-height: 200px"
+    (ready)="onCreateEditor($event)">
+  </nge-monaco-editor>
+  <nge-monaco-diff-editor
+    style="--editor-height: 200px"
+    (ready)="onCreateDiffEditor($event)">
+  </nge-monaco-diff-editor>
+</div>

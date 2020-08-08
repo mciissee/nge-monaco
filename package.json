@@ -1,0 +1,84 @@
+{
+  "name": "nge-monaco",
+  "version": "0.0.1",
+  "description": "Monaco editor integration in Angular",
+  "keywords": [
+    "angular",
+    "monaco",
+    "monaco-editor",
+    "editor"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mciissee/nge-monaco"
+  },
+  "bugs": {
+    "url": "https://github.com/mciissee/nge-monaco/issues"
+  },
+  "homepage": "https://github.com/mciissee/nge-monaco",
+  "author": {
+    "name": "Mamadou Cisse",
+    "email": "mciissee@gmail.com"
+  },
+  "license": "MIT",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "npm run build:lib && npm run build:demo",
+    "build:lib": "ng build nge-monaco",
+    "postbuild": "./scripts/postbuild.sh",
+    "build:demo": "ng build demo --prod --base-href='https://mciissee.github.io/nge-monaco/'",
+    "test": "ng test --code-coverage --watch=false",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "publish:lib": "npm publish ./dist/nge-monaco",
+    "publish:demo": "angular-cli-ghpages --dir=./dist/demo",
+    "format:check": "prettier --list-different 'projects/**/*.ts'",
+    "format:write": "prettier --write 'projects/**/*.ts'",
+    "release": "standard-version"
+  },
+  "private": false,
+  "dependencies": {
+    "@angular/animations": "~9.1.12",
+    "@angular/common": "~9.1.12",
+    "@angular/compiler": "~9.1.12",
+    "@angular/core": "~9.1.12",
+    "@angular/forms": "~9.1.12",
+    "@angular/platform-browser": "~9.1.12",
+    "@angular/platform-browser-dynamic": "~9.1.12",
+    "@angular/router": "~9.1.12",
+    "monaco-editor": "^0.20.0",
+    "rxjs": "~6.5.4",
+    "tslib": "^1.10.0",
+    "zone.js": "~0.10.2"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~0.901.11",
+    "@angular-devkit/build-ng-packagr": "~0.901.11",
+    "@angular/cli": "~9.1.11",
+    "@angular/compiler-cli": "~9.1.12",
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^9.1.1",
+    "@types/jasmine": "~3.5.0",
+    "@types/jasminewd2": "~2.0.3",
+    "@types/node": "^12.11.1",
+    "angular-cli-ghpages": "^0.6.2",
+    "codelyzer": "^5.1.2",
+    "cz-conventional-changelog": "^3.2.0",
+    "husky": "^4.2.5",
+    "jasmine-core": "~3.5.0",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~5.0.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage-istanbul-reporter": "~2.1.0",
+    "karma-jasmine": "~3.0.1",
+    "karma-jasmine-html-reporter": "^1.4.2",
+    "ng-packagr": "^9.0.0",
+    "prettier": "^2.0.5",
+    "protractor": "~7.0.0",
+    "standard-version": "^8.0.2",
+    "ts-node": "~8.3.0",
+    "tslint": "~6.1.0",
+    "typescript": "~3.8.3"
+  }
+}
