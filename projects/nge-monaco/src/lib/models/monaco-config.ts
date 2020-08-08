@@ -7,7 +7,7 @@ export interface NgeMonacoConfig {
     /**
      * Base path for monaco editor default: './assets'
      */
-    assets: string;
+    assets?: string;
 
     /**
      * Default locale (en).

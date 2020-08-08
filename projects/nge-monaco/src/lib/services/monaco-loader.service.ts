@@ -30,16 +30,32 @@ export class NgeMonacoLoaderService {
         if (this.loadPromise) {
             return this.loadPromise;
         }
+        const cdn = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0';
+
         return this.loadPromise = new Promise((resolve) => {
-            let baseUrl = this.config?.assets || './assets';
+            const wind = window as any;
+
+            let baseUrl = this.config?.assets || cdn;
+
+            // LOAD WEB WORKER FROM CDN IF BASE URL IS NOT DEFINED
+            if (baseUrl === cdn) {
+                const proxy = URL.createObjectURL(new Blob([`
+                    self.MonacoEnvironment = { baseUrl: '${cdn}/min'};
+                    importScripts('${cdn}/min/vs/base/worker/workerMain.min.js');
+                `], { type: 'text/javascript' }));
+                wind.MonacoEnvironment = { getWorkerUrl: () => proxy };
+            }
+
             if (baseUrl.endsWith('/')) {
                 baseUrl = baseUrl.slice(0, baseUrl.length - 1);
             }
-            const w = window as any;
+
             const onGotAmdLoader = () => {
-                w.require.config({ paths: { vs: baseUrl + '/monaco/min/vs' }});
+                wind.require.config({ paths: { vs: baseUrl + '/min/vs' }});
+
+                // SETUP MONACO EDITOR UI LANGUAGE
                 if (this.config?.locale && this.config.locale !== 'en') {
-                    w.require.config({
+                    wind.require.config({
                         'vs/nls' : {
                             availableLanguages: {
                                 '*': this.config?.locale,
@@ -47,7 +63,8 @@ export class NgeMonacoLoaderService {
                         }
                     });
                 }
-                w.require(['vs/editor/editor.main'], () => {
+
+                wind.require(['vs/editor/editor.main'], () => {
                     // if monaco.editor.colorizeElement is called when
                     // an editor has not already beed created, monaco will not apply
                     // any theme to the colorized tokens. So here we just create an editor
@@ -64,10 +81,11 @@ export class NgeMonacoLoaderService {
                     resolve(monaco);
                 });
             };
-            if (!w.require) {
+
+            if (!wind.require) {
                 const loaderScript = document.createElement('script');
                 loaderScript.type = 'text/javascript';
-                loaderScript.src = baseUrl + '/monaco/min/vs/loader.js';
+                loaderScript.src = baseUrl + '/min/vs/loader.js';
                 loaderScript.addEventListener('load', onGotAmdLoader);
                 document.body.appendChild(loaderScript);
             } else {

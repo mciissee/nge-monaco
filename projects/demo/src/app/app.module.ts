@@ -15,7 +15,6 @@ import { AppComponent } from './app.component';
     AppRoutingModule,
     NgeMonacoModule.forRoot({
         locale: 'fr',
-        assets: './assets',
     }),
   ],
   providers: [],
