@@ -1,15 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NgeMonacoLoaderService } from 'nge-monaco';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
+    subscription?: Subscription;
+
     code = [
     'from random import randint',
     'print(randint(0, 10))'
     ].join('\n');
+
+    constructor(
+        private readonly monacoLoader: NgeMonacoLoaderService
+    ) {}
+
+    ngOnInit() {
+        this.subscription = this.monacoLoader.onLoadMonaco((monaco) => {
+            console.log('onLoadMonaco', monaco);
+        });
+    }
+
+    ngOnDestroy() {
+        this.subscription?.unsubscribe();
+    }
 
     onCreateEditor(editor: monaco.editor.IStandaloneCodeEditor) {
         editor.setModel(monaco.editor.createModel('', 'javascript'));

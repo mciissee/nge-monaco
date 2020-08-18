@@ -3,8 +3,7 @@ import { NgeMonacoLoaderService } from '../../services/monaco-loader.service';
 
 @Component({
   selector: 'nge-monaco-viewer',
-  templateUrl: './monaco-viewer.component.html',
-  styleUrls: ['./monaco-viewer.component.scss'],
+  template: '<pre><code #container></code></pre>',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDestroy {
@@ -27,7 +26,7 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
     ) {}
 
     async ngAfterViewInit() {
-        await this.loader.require();
+        await this.loader.loadAsync();
         this.colorizeElement();
     }
 

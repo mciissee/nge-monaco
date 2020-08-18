@@ -5,7 +5,7 @@ import { InjectionToken } from '@angular/core';
  */
 export interface NgeMonacoConfig {
     /**
-     * Base path for monaco editor default: './assets'
+     * Base path for monaco editor default: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0'
      */
     assets?: string;
 
