@@ -1,13 +1,26 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
-import { NgeMonacoLoaderService } from '../../services/monaco-loader.service';
+import {
+    AfterViewInit,
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    Input,
+    OnChanges,
+    OnDestroy,
+    ViewChild,
+} from '@angular/core';
+import { NgeMonacoColorizerService } from '../../services/monaco-colorizer.service';
+import { NgeMonacoThemeService } from '../../services/monaco-theme.service';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'nge-monaco-viewer',
-  template: '<pre><code #container></code></pre>',
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'nge-monaco-viewer',
+    templateUrl: 'monaco-viewer.component.html',
+    styleUrls: ['monaco-viewer.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDestroy {
     @ViewChild('container') container?: ElementRef<HTMLElement>;
+    @ViewChild('transclusion') transclusion?: ElementRef<HTMLElement>;
 
     /** code to highlight */
     @Input() code?: string;
@@ -18,106 +31,59 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
     /** space separated list of line numbers to highlight */
     @Input() highlights?: string;
 
-    private detectChanges = false;
     private editor?: monaco.editor.IEditor;
+    private observer?: MutationObserver;
+    private subscriptions: Subscription[] = [];
+    private currentCode = '';
 
     constructor(
-        private readonly loader: NgeMonacoLoaderService,
+        private readonly theming: NgeMonacoThemeService,
+        private readonly colorizer: NgeMonacoColorizerService,
     ) {}
 
-    async ngAfterViewInit() {
-        await this.loader.loadAsync();
-        this.colorizeElement();
+    ngAfterViewInit() {
+        this.observer = new MutationObserver(this.colorize.bind(this));
+        this.observer.observe(this.transclusion.nativeElement, {
+            subtree: true,
+            childList: true,
+            characterData: true,
+        });
+        this.colorize();
     }
 
-    ngOnChanges(_: SimpleChanges): void {
-        if (this.detectChanges) {
-            this.colorizeElement();
-        }
+    ngOnChanges(): void {
+        this.colorize();
     }
 
     ngOnDestroy() {
         this.editor?.dispose();
+        this.observer?.disconnect();
+        this.subscriptions.forEach(s => s.unsubscribe());
     }
 
-    private async colorizeElement() {
-        this.detectChanges = true;
-        if (!this.container) {
+    private async colorize() {
+        if (!this.container || !this.transclusion) {
             return;
         }
 
-        const element = this.container.nativeElement;
+        const code = this
+            .transclusion
+            .nativeElement
+            .innerHTML?.trim()
+            || this.code;
 
-        const linesToHighlight = (this.highlights || '')
-            .trim()
-            .split(' ')
-            .map(e => Number.parseInt(e, 10));
-
-        const lineNumsToShow = (this.linenums || '')
-            .trim()
-            .split(' ')
-            .map(e => Number.parseInt(e, 10));
-
-        const tagsToReplace: any = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;'
-        };
-
-        function replaceTag(tag: string) {
-            return tagsToReplace[tag] || tag;
+        if (code === this.currentCode) {
+            return;
         }
+        this.currentCode = code;
 
-        element.innerHTML = (this.code || '').replace(/[&<>]/g, replaceTag);
-        element.style.padding = '4px';
-        element.style.display = 'block';
-
-        await monaco.editor.colorizeElement(element, {
-            mimeType: this.language || 'plaintext'
+        await this.colorizer.colorizeElement({
+            code,
+            element: this.container.nativeElement,
+            highlights: this.highlights,
+            language: this.language,
+            linenums: this.linenums,
         });
-
-        const childs = element.childNodes;
-
-        let lineCounter = 1;
-        let newLine = true;
-
-        childs.forEach((e) => {
-            const node = e as HTMLElement;
-            if (newLine) {
-                const div = document.createElement('div');
-                div.style.height = '18px';
-                if (linesToHighlight.includes(lineCounter)) {
-                    div.style.backgroundColor = 'rgba(96,113,164,.2)';
-                }
-
-                element.insertBefore(div, node);
-                element.removeChild(node);
-                div.appendChild(node);
-                newLine = false;
-            } else if (node.tagName === 'BR') {
-                lineCounter++;
-                newLine = true;
-            }
-        });
-
-        Array.from(element.getElementsByTagName('br')).forEach(node => node.remove());
-
-        if (this.linenums) {
-            const lines = ['<div style="padding:0  12px; text-align: right;">'];
-            const startingAt = lineNumsToShow.length === 1;
-            for (let i = 0; i < lineCounter; i++) {
-                let lineNum = '';
-                if (lineNumsToShow.includes(i + 1) || (startingAt && (i + 1) >= lineNumsToShow[0])) {
-                    lineNum = '' + (i + 1);
-                }
-                lines.push(`<div style="height: 18px">${lineNum}</div>`);
-            }
-            lines.push('</div>');
-            element.style.display = 'flex';
-            element.innerHTML = `
-                ${lines.join('')}<div style="flex: 1;">${element.innerHTML}</div>
-            `;
-        }
     }
 
 }

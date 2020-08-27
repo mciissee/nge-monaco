@@ -1,3 +1,5 @@
+// ACTIONS
+
 /** Move Caret Left */
 export const MOVE_CARRET_LEFT_ACTION = 'editor.action.moveCarretLeftAction';
 /** Move Caret Right */
@@ -182,3 +184,39 @@ export const SHOW_HOVER_ACTION = 'editor.action.showHover';
 export const SHOW_DEFINITION_PREVIEW_HOVER_ACTION = 'editor.action.showDefinitionPreviewHover';
 /** Trigger Suggest */
 export const TRIGGER_SUGGEST_ACTION = 'editor.action.triggerSuggest';
+
+
+
+// https://github.com/microsoft/vscode/tree/master/src/vs/editor/contrib
+
+export const COLOR_DETECTOR_CONTRIB = 'editor.contrib.colorDetector';
+export const CONTEXT_MENU_CONTRIB = 'editor.contrib.contextmenu';
+export const CURSOR_UNDO_REDO_CONTROLLER_CONTRIB = 'editor.contrib.cursorUndoRedoController';
+export const DRAG_AND_DROP_CONTRIB = 'editor.contrib.dragAndDrop';
+export const AUTO_FORMAT_CONTRIB = 'editor.contrib.autoFormat';
+export const FORMAT_ON_PAST_CONTRIB = 'editor.contrib.formatOnPaste';
+export const SMART_SELECT_CONTRIB = 'editor.contrib.smartSelectController';
+export const IPAD_SHOW_KEYBOARD_CONTRIB = 'editor.contrib.iPadShowKeyboard';
+export const BRACKET_MATCHING_CONTROLLER_CONTRIB = 'editor.contrib.bracketMatchingController';
+export const CODE_LENS_CONTRIB = 'css.editor.codeLens';
+export const FIND_CONTROLLE_CONTRIB = 'editor.contrib.findController';
+export const FOLDING_CONTRIB = 'editor.contrib.folding';
+export const IN_PLACE_REPLACE_CONTROLLER_CONTRIB = 'editor.contrib.inPlaceReplaceController';
+export const LINK_DETECTOR_CONTRIB = 'editor.linkDetector';
+export const MESSAGE_CONTROLLER_CONTRIB = 'editor.contrib.messageController';
+export const QUICK_FIX_CONTROLLER_CONTRIB = 'editor.contrib.quickFixController';
+export const MULTI_CURSOR_CONTROLLER_CONTRIB = 'editor.contrib.multiCursorController';
+export const SELECTION_HIGHLIGHTER_CONTRIB = 'editor.contrib.selectionHighlighter';
+export const PARAMETER_HINTS_CONTRIB = 'editor.controller.parameterHints';
+export const REFERENCE_CONTROLLER_CONTRIB = 'editor.contrib.referenceController';
+export const RENAME_CONTROLLER_CONTRIB = 'editor.contrib.renameController';
+export const WORD_HIGHLIGHTER_CONTRIB = 'editor.contrib.wordHighlighter';
+export const ACCESSIBILIY_HELP_CONTROLLER_CONTRIB = 'editor.contrib.accessibilityHelpController';
+export const INSPECT_TOKENS_CONTRIB = 'editor.contrib.inspectTokens';
+export const QUICK_OPEN_CONTROLLER_CONTRIB = 'editor.controller.quickOpenController';
+export const GOTO_DEFINITION_CONTRIB = 'editor.contrib.gotodefinitionatposition';
+export const REFERENCES_CONTROLLER_CONTRIB = 'editor.contrib.referencesController';
+export const MARKER_CONTROLLER_CONTRIB = 'editor.contrib.markerController';
+export const HOVER_CONTRIB = 'editor.contrib.hover';
+export const SNIPPET_CONTROLLER_CONTRIB = 'snippetController2';
+export const SUGGEST_CONTROLLER_CONTRIB = 'editor.contrib.suggestController';

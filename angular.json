@@ -67,7 +67,8 @@
               "projects/demo/src/favicon.ico",
               "projects/demo/src/assets",
               { "glob": "**/*", "input": "./node_modules/monaco-editor/min", "output": "./assets/monaco/min" },
-              { "glob": "**/*", "input": "./node_modules/monaco-editor/min-maps", "output": "./assets/monaco/min-maps" }
+              { "glob": "**/*", "input": "./node_modules/monaco-editor/min-maps", "output": "./assets/monaco/min-maps" },
+              { "glob": "**/*", "input": "./projects/nge-monaco/src/lib/themes", "output": "./assets/themes" }
             ],
             "styles": [
               "projects/demo/src/styles.scss"

@@ -18,6 +18,14 @@ export interface NgeMonacoConfig {
      * Monaco editor default options.
      */
     options?: monaco.editor.IEditorOptions;
+
+    /** Monaco editor theming configuration. */
+    theming?: {
+        /** path to theme files. */
+        themes?: string[];
+        /** default theme 'vs' */
+        default?: string;
+    };
 }
 
 /**

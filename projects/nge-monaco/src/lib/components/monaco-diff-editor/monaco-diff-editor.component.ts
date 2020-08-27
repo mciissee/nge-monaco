@@ -10,7 +10,7 @@ import {
     Output,
     ViewChild,
 } from '@angular/core';
-import { NgeMonacoConfig, NGE_MONACO_CONFIG } from '../../models/monaco-config';
+import { NgeMonacoConfig, NGE_MONACO_CONFIG } from '../../monaco-config';
 import { NgeMonacoLoaderService } from '../../services/monaco-loader.service';
 
 @Component({
