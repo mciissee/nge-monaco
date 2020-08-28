@@ -9,7 +9,6 @@ import {
     ViewChild,
 } from '@angular/core';
 import { NgeMonacoColorizerService } from '../../services/monaco-colorizer.service';
-import { NgeMonacoThemeService } from '../../services/monaco-theme.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -24,10 +23,10 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
 
     /** code to highlight */
     @Input() code?: string;
+    /** show line numbers? */
+    @Input() lines?: string;
     /** target language */
     @Input() language?: string;
-    /** show line numbers? */
-    @Input() linenums?: string;
     /** space separated list of line numbers to highlight */
     @Input() highlights?: string;
 
@@ -37,7 +36,6 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
     private currentCode = '';
 
     constructor(
-        private readonly theming: NgeMonacoThemeService,
         private readonly colorizer: NgeMonacoColorizerService,
     ) {}
 
@@ -75,14 +73,15 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
         if (code === this.currentCode) {
             return;
         }
+
         this.currentCode = code;
 
         await this.colorizer.colorizeElement({
             code,
             element: this.container.nativeElement,
-            highlights: this.highlights,
+            lines: this.lines,
             language: this.language,
-            linenums: this.linenums,
+            highlights: this.highlights,
         });
     }
 
