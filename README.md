@@ -223,7 +223,7 @@ Alt-H2
 </nge-monaco-viewer>
 ```
 
-### Configuration
+## Configuration
 
 Optionally, nge-monaco can be configured by passing **NgeMonacoConfig** object to the forRoot method of **NgeMonacoModule**.
 
@@ -247,7 +247,7 @@ import { AppComponent } from './app.component';
 +          scrollBeyondLastLine: false
 +       },
 +       theming: {
-+         paths: [ // custom themes (see theming section for more information)
++         themes: [ // custom themes (see theming section for more information)
 +           'assets/themes/nord.json',
 +           'assets/themes/github.json',
 +           'assets/themes/one-dark-pro.json',
@@ -262,9 +262,243 @@ import { AppComponent } from './app.component';
 export class AppModule { }
 ```
 
-### Theming
+## Theming
 
-This library comes with a set of custom themes for monaco editor taken from 
+This library comes with a set of custom themes for monaco editor taken from [https://github.com/brijeshb42/monaco-themes/tree/master/themes](https://github.com/brijeshb42/monaco-themes/tree/master/themes) that can be added to the libray by using `NgeMonacoModule.forRoot()` method.
 
-### Extensions
+### Add the glob to assets in angular.json
 
+```diff
+{
+  "apps": [
+    {
+      "assets": [
++        { "glob": "**/*", "input": "./node_modules/nge-monaco/assets/themes", "output": "./assets/themes/" }
+      ],
+      ...
+    }
+    ...
+  ],
+  ...
+}
+```
+
+### Register the themes you want to use
+
+```diff
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
++ import { NgeMonacoModule, NGE_THEMES } from 'nge-monaco';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
++    NgeMonacoModule.forRoot({
++       theming: {
++         /* // use a subset of themes
++         themes: [ // custom themes
++           'assets/themes/nord.json',
++           'assets/themes/github.json',
++           'assets/themes/one-dark-pro.json',
++         ],
++         */
++         themes: NGE_THEMES.map(theme => 'assets/themes/' + theme), // use all themes
++         default: 'github' // default theme
++       }
++    }),
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+#### Use the API to change the theme
+
+```html
+<!-- example.component.html -->
+
+<select name="theme" id="theme" (change)="switchTheme($event.target.value)">
+  <ng-container *ngFor="let theme of themes|async" >
+    <option [value]="theme">{{ theme }}</option>
+  </ng-container>
+</select>
+
+<nge-monaco-editor
+  style="--editor-height: 200px"
+  (ready)="onCreateEditor($event)">
+</nge-monaco-editor>
+
+```
+
+```typescript
+// example.component.ts
+
+import { Component } from '@angular/core';
+import { NgeMonacoThemeService } from 'nge-monaco';
+
+@Component({
+    selector: 'app-example',
+    templateUrl: './example.component.html',
+    styleUrls: ['./example.component.scss'],
+})
+export class ExampleComponent {
+    themes = this.theming.themesChanges;
+
+    constructor(
+        private readonly theming: NgeMonacoThemeService
+    ) {}
+
+    onCreateEditor(editor: monaco.editor.IStandaloneCodeEditor) {
+        editor.setModel(monaco.editor.createModel('print("Hello world")', 'python'));
+    }
+
+    async switchTheme(theme: string) {
+        this.theming.setTheme(theme);
+    }
+}
+
+```
+
+## Extensions
+
+To extends monaco editor api once the editor is loaded, this library expose the injection token `NGE_MONACO_CONTRIBUTION`.
+
+```diff
+import { NgModule, Injectable, Injector } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
++ import { NgeMonacoModule, NgeMonacoContribution, NGE_MONACO_CONTRIBUTION } from 'nge-monaco';
+
+@Injectable() // use injectable only if you want to use angular dependency injection.
+class MyContribution implements NgeMonacoContribution {
+
+  constructor(
+    private readonly injector: Injector,
+    // use angular dependency injector to inject whatever you want.
+  ) {}
+
+  activate(): void | Promise<void> {
+    // use monaco object from window.monaco to extends monaco editor api.
+
+    monaco.languages.register({ id: 'mySpecialLanguage' });
+
+    // Register a tokens provider for the language
+    monaco.languages.setMonarchTokensProvider('mySpecialLanguage', {
+      tokenizer: {
+        root: [
+          [/\[error.*/, "custom-error"],
+          [/\[notice.*/, "custom-notice"],
+          [/\[info.*/, "custom-info"],
+          [/\[[a-zA-Z 0-9:]+\]/, "custom-date"],
+        ]
+      }
+    });
+  }
+
+  deactivate(): void | Promise<void> {
+    // free the disposables and subscriptions here
+  }
+
+}
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
++   NgeMonacoModule.forRoot({}),
+  ],
+  providers: [
++    { provide: NGE_MONACO_CONTRIBUTION, multi: true, useClass: MyContribution },
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+## Load Monaco Editor from your own server
+
+By default the libray load monaco editor from the cdn [https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0](https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0). So if you want to load monaco editor from your serve, you must add monaco editor assets to you assets folder
+by using a glob pattern in angular.json and change the value of `assets` property of `NgeMonacoConfig` object inside the `forRoot` method.
+
+### Update angular.json
+
+```diff
+{
+  "apps": [
+    {
+      "assets": [
++        { "glob": "**/*", "input": "./node_modules/nge-monaco/assets/monaco", "output": "./assets/monaco/" }
+      ],
+      ...
+    }
+    ...
+  ],
+  ...
+}
+```
+
+### Change the configuration
+
+```diff
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
++ import { NgeMonacoModule } from 'nge-monaco';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
++    NgeMonacoModule.forRoot({
++       assets: 'assets/monaco'
++    }),
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+```
+
+## Links
+
+[Monaco Editor](https://github.com/Microsoft/monaco-editor/)<br/>
+[Monaco Editor Options](https://microsoft.github.io/monaco-editor/api/interfaces/monaco.editor.ieditorconstructionoptions.html)
+
+## Contribution
+
+Contributions are always welcome. <br/>
+
+Please read our [CONTRIBUTING.md](https://github.com/mciissee/nge-monaco/blob/master/CONTRIBUTING.md) first. You can submit any ideas as [pull requests](https://github.com/mciissee/nge-monaco/pulls) or as [GitHub issues](https://github.com/mciissee/nge-monaco/issues).
+
+Please just make sure that ...
+
+Your code style matches with the rest of the project
+
+Unit tests pass
+
+Linter passes
+
+## Support Development
+
+The use of this library is totally free and no donation is required.
+
+As the owner and primary maintainer of this project, I am putting a lot of time and effort beside my job, my family and my private time to bring the best support I can by answering questions, addressing issues and improving the library to provide more and more features over time.
+
+If this project has been useful, that it helped you or your business to save precious time, don't hesitate to give it a star and to consider a donation to support its maintenance and future development.
+
+## License
+
+MIT © [Mamadou Cisse](https://github.com/mciissee)
