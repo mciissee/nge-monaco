@@ -427,10 +427,9 @@ export class AppModule { }
 
 ## Load Monaco Editor from your own server
 
-By default the libray load monaco editor from the cdn [https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0](https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0). So if you want to load monaco editor from your serve, you must add monaco editor assets to you assets folder
-by using a glob pattern in angular.json and change the value of `assets` property of `NgeMonacoConfig` object inside the `forRoot` method.
+By default the library load monaco editor from the cdn [https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0](https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0). Please follow the steps above to load monaco from your own server.
 
-### Update angular.json
+### Include monaco assets to angular.json
 
 ```diff
 {
