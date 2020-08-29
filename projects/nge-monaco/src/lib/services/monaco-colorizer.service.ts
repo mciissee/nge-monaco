@@ -123,13 +123,50 @@ export class NgeMonacoColorizerService {
 }
 
 export interface NgeMonacoColorizeOptions {
+    /** Element to colorize. */
     element: HTMLElement;
-    /** code to highlight */
+
+    /** Code to highlight */
     code: string;
-    /** target language (default plaintext) */
+
+    /** Target language (default plaintext). */
     language?: string;
-    /** show line numbers? */
+
+    /**
+     * Start line number or a space separated list of line numbers to show.
+     *
+     * Example:
+     *
+     * *Show all line numbers starting 1*
+     *
+     * `"1"`
+     *
+     * *Show all line numbers from 1 to 4*
+     *
+     * `"1-4"`
+     *
+     * *Show lines 2 4 5 6 7 9*
+     *
+     * `"2 4-7 9"`
+     */
     lines?: string;
-    /** space separated list of line numbers to highlight */
+
+    /**
+     * A space separated list of line numbers to highlight.
+     *
+     * Example:
+     *
+     * *Highlight line 1*
+     *
+     * `"1"`
+     *
+     * *Highlight all lines from 1 to 4*
+     *
+     * `"1-4"`
+     *
+     * *Highlightw lines 2 4 5 6 7 9*
+     *
+     * `"2 4-7 9"`
+     */
     highlights?: string;
 }
