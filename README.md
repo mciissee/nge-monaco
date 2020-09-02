@@ -202,7 +202,7 @@ export class ExampleComponent implement OnDestroy {
 <!-- example.component.html -->
 
 <!-- DYNAMIC CODE -->
-<nge-monaco-viewer [language]="python" [code]="code"></nge-monaco-viewer>
+<nge-monaco-viewer [language]="'python'" [code]="code"></nge-monaco-viewer>
 
 <!-- STATIC CODE -->
 <nge-monaco-viewer [language]="'markdown'" [lines]="'1 4-7 10'" [highlights]="'2-5'" ngPreserveWhitespaces>
