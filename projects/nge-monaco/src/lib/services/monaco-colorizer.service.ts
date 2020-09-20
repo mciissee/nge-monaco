@@ -80,7 +80,7 @@ export class NgeMonacoColorizerService {
         const linesContainer = ['<div style="padding:0  12px; text-align: right;">'];
         const startingAt = linesToShow.length === 1;
         const linesCount =  (options.code || '').split('\n').length;
-        for (let i = 0; i < linesCount - 1; i++) {
+        for (let i = 0; i < linesCount; i++) {
             let lineNum = '';
             if (linesToShow.includes(i + 1) || (startingAt && (i + 1) >= linesToShow[0])) {
                 lineNum = '' + (i + 1);

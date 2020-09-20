@@ -22,7 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
            //     'assets/themes/one-dark-pro.json',
            // ],
            themes: NGE_THEMES.map(theme => 'assets/themes/' + theme),
-           default: 'vs'
+           default: 'github'
         }
     }),
   ],
