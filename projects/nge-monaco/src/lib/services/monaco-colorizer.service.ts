@@ -28,7 +28,6 @@ export class NgeMonacoColorizerService {
 
     private escapeHtml(input: string) {
         const map: any = {
-            '&': '&amp;',
             '<': '&lt;',
             '>': '&gt;'
         };
@@ -72,7 +71,6 @@ export class NgeMonacoColorizerService {
         if (!options.lines) {
             return;
         }
-
         const { element } = options;
 
         const linesToShow = this.lineNumbersFromString(options.lines || '');
