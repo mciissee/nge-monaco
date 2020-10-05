@@ -24,16 +24,15 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
     /** code to highlight */
     @Input() code?: string;
     /** show line numbers? */
-    @Input() lines?: string;
+    @Input() lines?: string | number;
     /** target language */
     @Input() language?: string;
     /** space separated list of line numbers to highlight */
-    @Input() highlights?: string;
+    @Input() highlights?: string | number;
 
     private editor?: monaco.editor.IEditor;
     private observer?: MutationObserver;
     private subscriptions: Subscription[] = [];
-    private currentCode = '';
 
     constructor(
         private readonly colorizer: NgeMonacoColorizerService,
@@ -69,12 +68,6 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
             .nativeElement
             .innerHTML?.trim()
             || this.code;
-
-        if (code === this.currentCode) {
-            return;
-        }
-
-        this.currentCode = code;
 
         await this.colorizer.colorizeElement({
             code,

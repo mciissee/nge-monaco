@@ -16,6 +16,16 @@ export class NgeMonacoColorizerService {
         element.style.padding = '4px';
         element.style.display = 'block';
 
+        const pre = element.parentElement;
+        if (pre?.tagName === 'PRE') {
+            if (!pre.classList.contains('monaco-editor')) {
+                pre.classList.add('monaco-editor');
+            }
+            if (!pre.classList.contains('monaco-editor-background')) {
+                pre.classList.add('monaco-editor-background');
+            }
+        }
+        element.className = '';
         await this.loader.loadAsync();
         await monaco.editor.colorizeElement(element, {
             mimeType: options.language || 'plaintext',
@@ -41,7 +51,7 @@ export class NgeMonacoColorizerService {
 
         const { element } = options;
 
-        const linesToHighlight = this.lineNumbersFromString(options.highlights);
+        const linesToHighlight = this.lineNumbersFromString(options.highlights.toString());
 
         let newLine = true;
         let lineNumber = 1;
@@ -73,7 +83,7 @@ export class NgeMonacoColorizerService {
         }
         const { element } = options;
 
-        const linesToShow = this.lineNumbersFromString(options.lines || '');
+        const linesToShow = this.lineNumbersFromString(options.lines.toString());
 
         const linesContainer = ['<div style="padding:0  12px; text-align: right;">'];
         const startingAt = linesToShow.length === 1;
@@ -121,7 +131,7 @@ export class NgeMonacoColorizerService {
 }
 
 export interface NgeMonacoColorizeOptions {
-    /** Element to colorize. */
+    /** Element to colorize (&lt;code&gt; element). */
     element: HTMLElement;
 
     /** Code to highlight */
@@ -147,7 +157,7 @@ export interface NgeMonacoColorizeOptions {
      *
      * `"2 4-7 9"`
      */
-    lines?: string;
+    lines?: string | number;
 
     /**
      * A space separated list of line numbers to highlight.
@@ -162,9 +172,9 @@ export interface NgeMonacoColorizeOptions {
      *
      * `"1-4"`
      *
-     * *Highlightw lines 2 4 5 6 7 9*
+     * *Highlight lines 2 4 5 6 7 9*
      *
      * `"2 4-7 9"`
      */
-    highlights?: string;
+    highlights?: string | number;
 }
