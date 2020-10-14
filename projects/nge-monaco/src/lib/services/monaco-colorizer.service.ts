@@ -41,7 +41,7 @@ export class NgeMonacoColorizerService {
             '<': '&lt;',
             '>': '&gt;'
         };
-        return input.replace(/[&<>]/g, (tag) => map[tag] || tag);
+        return input.replace(/[<>]/g, (tag) => map[tag] || tag);
     }
 
     private highlightLines(options: NgeMonacoColorizeOptions) {

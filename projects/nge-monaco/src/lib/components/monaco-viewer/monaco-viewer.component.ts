@@ -66,7 +66,7 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
         const code = this
             .transclusion
             .nativeElement
-            .innerHTML?.trim()
+            .textContent?.trim()
             || this.code;
 
         await this.colorizer.colorizeElement({
