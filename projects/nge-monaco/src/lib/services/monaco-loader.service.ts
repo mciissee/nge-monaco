@@ -4,10 +4,10 @@ import { NgeMonacoConfig, NGE_MONACO_CONFIG } from '../monaco-config';
 import { NgeMonacoContribution, NGE_MONACO_CONTRIBUTION } from '../contributions/monaco-contribution';
 
 /** monaco editor cdn url hosted at cdnjs. */
-export const MONACO_CDNJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.20.0';
+export const MONACO_CDNJS_URL = 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.21.2';
 
 /** monaco editor cdn url hosted at jsdeliver. */
-export const MONACO_JS_DELIVER_URL = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.20.0';
+export const MONACO_JS_DELIVER_URL = 'https://cdn.jsdelivr.net/npm/monaco-editor@0.21.2';
 
 /**
  * Loads monaco editor using AMD loader.
