@@ -28,6 +28,11 @@ const documentation: NgeDocSettings = {
             href: 'usage',
             renderer: `assets/docs/usage.md`,
         },
+        {
+            title: 'Showcase',
+            href: 'showcase',
+            renderer: () => import('./showcase/showcase.module').then(m => m.ShowcaseModule)
+        }
     ],
 };
 
