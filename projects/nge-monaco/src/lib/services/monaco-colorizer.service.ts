@@ -26,9 +26,16 @@ export class NgeMonacoColorizerService {
             }
         }
         element.className = '';
+
         await this.loader.loadAsync();
+
+        const languages = monaco.languages.getLanguages();
+        const language = languages.find(e => {
+            return (e.id === options.language) || e.aliases?.find(a => a === options.language);
+        })?.id;
+
         await monaco.editor.colorizeElement(element, {
-            mimeType: options.language || 'plaintext',
+            mimeType: language || 'plaintext',
             theme: this.theming.theme?.themeName || 'vs',
         });
 
@@ -81,24 +88,31 @@ export class NgeMonacoColorizerService {
         if (!options.lines) {
             return;
         }
+
         const { element } = options;
-
-        const linesToShow = this.lineNumbersFromString(options.lines.toString());
-
-        const linesContainer = ['<div style="padding:0  12px; text-align: right;">'];
-        const startingAt = linesToShow.length === 1;
-        const linesCount =  (options.code || '').split('\n').length;
-        for (let i = 0; i < linesCount; i++) {
-            let lineNum = '';
-            if (linesToShow.includes(i + 1) || (startingAt && (i + 1) >= linesToShow[0])) {
-                lineNum = '' + (i + 1);
+        const lines = this.lineNumbersFromString(options.lines.toString());
+        const length =  (options.code || '').split('\n').length;
+        if (lines.length === 1) {
+            for (let i = lines[0] + 1; i <= length; i++) {
+                lines.push(i);
             }
-            linesContainer.push(`<div class="line-numbers" style="height: 18px">${lineNum}</div>`);
         }
-        linesContainer.push('</div>');
+
+        const side = ['<div style="padding:0  12px; text-align: right;">'];
+        for (let i = 0; i < length; i++) {
+            let num = '';
+            if (lines.includes(i + 1)) {
+                num = '' + (i + 1);
+            }
+            side.push(`<div class="line-numbers" style="height: 18px">${num}</div>`);
+        }
+        side.push('</div>');
 
         element.style.display = 'flex';
-        element.innerHTML = `${linesContainer.join('')}<div style="flex: 1;">${element.innerHTML}</div>`;
+        element.innerHTML = `
+            ${side.join('')}
+            <div style="flex: 1;">${element.innerHTML}</div>
+        `;
     }
 
     private lineNumbersFromString(input: string): number[] {
