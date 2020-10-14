@@ -68,7 +68,7 @@ export class NgeMonacoThemeService implements NgeMonacoContribution {
     async setTheme(themeName: string) {
         await this.defineTheme(themeName);
         monaco.editor.setTheme(themeName);
-        this.activeTheme.next(this.themeService.getTheme());
+        this.activeTheme.next(this.themeService.getColorTheme());
     }
 
     /**
@@ -143,6 +143,7 @@ export interface NgeMonacoTheme {
     type: 'light' | 'dark' | 'hc';
     colors: Map<string, any>;
     themeName: string;
+    semanticHighlighting: boolean;
     themeData: monaco.editor.IStandaloneThemeData;
     defaultColors: Map<string, any>;
     defines(colorId: string): boolean;
