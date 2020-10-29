@@ -27,7 +27,10 @@ export class PreventSymbolDuplication implements NgeMonacoContribution {
         let disposables: monaco.IDisposable[] = [];
         disposables.push(
             editor.onDidCompositionStart(() => {
-                positions.push(editor.getPosition());
+                const position = editor.getPosition();
+                if (position) {
+                    positions.push(position);
+                }
             })
         );
         disposables.push(
@@ -38,6 +41,10 @@ export class PreventSymbolDuplication implements NgeMonacoContribution {
                     }
                     const before = positions[0];
                     const after = editor.getPosition();
+                    if (!after) {
+                        return;
+                    }
+
                     positions.splice(0, 1);
                     const diff = after.column - before.column;
                     if (diff > 1) {
@@ -63,7 +70,7 @@ export class PreventSymbolDuplication implements NgeMonacoContribution {
         );
         disposables.push(editor.onDidDispose(() => {
             disposables.forEach(e => e.dispose());
-            disposables = null;
+            disposables = [];
         }));
     }
 }

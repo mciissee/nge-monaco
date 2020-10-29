@@ -1,4 +1,5 @@
 import {
+    AfterViewChecked,
     AfterViewInit,
     Component,
     ElementRef,
@@ -8,7 +9,7 @@ import {
     OnDestroy,
     Optional,
     Output,
-    ViewChild,
+    ViewChild
 } from '@angular/core';
 import { NgeMonacoConfig, NGE_MONACO_CONFIG } from '../../monaco-config';
 import { NgeMonacoLoaderService } from '../../services/monaco-loader.service';
@@ -18,17 +19,18 @@ import { NgeMonacoLoaderService } from '../../services/monaco-loader.service';
     templateUrl: './monaco-editor.component.html',
     styleUrls: ['./monaco-editor.component.scss'],
 })
-export class NgeMonacoEditorComponent implements AfterViewInit, OnDestroy {
-    @ViewChild('container') container: ElementRef<HTMLElement>;
+export class NgeMonacoEditorComponent implements AfterViewInit, AfterViewChecked, OnDestroy {
+    @ViewChild('container', { static: true }) container!: ElementRef<HTMLElement>;
     @Output() ready = new EventEmitter<monaco.editor.IEditor>();
 
     private editor?: monaco.editor.IStandaloneCodeEditor;
+    private width = 0;
 
     constructor(
         private readonly loader: NgeMonacoLoaderService,
         @Optional()
         @Inject(NGE_MONACO_CONFIG)
-        private readonly config: NgeMonacoConfig
+        private readonly config: NgeMonacoConfig,
     ) {}
 
     @HostListener('window:resize')
@@ -40,6 +42,14 @@ export class NgeMonacoEditorComponent implements AfterViewInit, OnDestroy {
         this.loader.loadAsync().then(() => {
             this.createEditor();
         });
+    }
+
+    ngAfterViewChecked() {
+        const { offsetWidth } = this.container.nativeElement;
+        if (offsetWidth !== this.width) {
+            this.width = offsetWidth;
+            this.editor?.layout();
+        }
     }
 
     ngOnDestroy() {

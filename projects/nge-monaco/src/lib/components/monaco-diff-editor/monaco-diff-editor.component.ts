@@ -1,4 +1,5 @@
 import {
+    AfterViewChecked,
     AfterViewInit,
     Component,
     ElementRef,
@@ -18,12 +19,13 @@ import { NgeMonacoLoaderService } from '../../services/monaco-loader.service';
     templateUrl: './monaco-diff-editor.component.html',
     styleUrls: ['./monaco-diff-editor.component.scss'],
 })
-export class NgeMonacoDiffEditorComponent implements AfterViewInit, OnDestroy {
-    @ViewChild('container') container: ElementRef<HTMLElement>;
+export class NgeMonacoDiffEditorComponent implements AfterViewInit, AfterViewChecked, OnDestroy {
+    @ViewChild('container', { static: true }) container!: ElementRef<HTMLElement>;
 
     @Output() ready = new EventEmitter<monaco.editor.IEditor>();
 
     private editor?: monaco.editor.IStandaloneDiffEditor;
+    private width = 0;
 
     constructor(
         private readonly loader: NgeMonacoLoaderService,
@@ -41,6 +43,14 @@ export class NgeMonacoDiffEditorComponent implements AfterViewInit, OnDestroy {
         this.loader.loadAsync().then(() => {
             this.createEditor();
         });
+    }
+
+    ngAfterViewChecked() {
+        const { offsetWidth } = this.container.nativeElement;
+        if (offsetWidth !== this.width) {
+            this.width = offsetWidth;
+            this.editor?.layout();
+        }
     }
 
     ngOnDestroy() {
