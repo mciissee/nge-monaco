@@ -93,7 +93,11 @@ export class NgeMonacoThemeService implements NgeMonacoContribution {
     }
 
     private themeNameFromPath(path: string) {
-        return path.split('/').pop().replace('.json', '');
+        const name = path.split('/').pop();
+        if (!name) {
+            throw new Error(`[nge-monaco]: invalid theme path "${path}"`);
+        }
+        return name.replace('.json', '');
     }
 
     private async defineTheme(themeName: string) {
