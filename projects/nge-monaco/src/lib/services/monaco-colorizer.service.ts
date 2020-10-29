@@ -12,6 +12,7 @@ export class NgeMonacoColorizerService {
 
     async colorizeElement(options: NgeMonacoColorizeOptions) {
         const { element } = options;
+
         element.innerHTML = this.escapeHtml(options.code || '');
         element.style.padding = '4px';
         element.style.display = 'block';

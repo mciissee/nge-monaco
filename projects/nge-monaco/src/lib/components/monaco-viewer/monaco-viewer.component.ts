@@ -1,5 +1,4 @@
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     ElementRef,
@@ -17,9 +16,9 @@ import { Subscription } from 'rxjs';
     styleUrls: ['monaco-viewer.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDestroy {
-    @ViewChild('container') container?: ElementRef<HTMLElement>;
-    @ViewChild('transclusion') transclusion?: ElementRef<HTMLElement>;
+export class NgeMonacoViewerComponent implements OnChanges, OnDestroy {
+    @ViewChild('container', { static: true }) container!: ElementRef<HTMLElement>;
+    @ViewChild('transclusion', { static: true }) transclusion!: ElementRef<HTMLElement>;
 
     /** code to highlight */
     @Input() code?: string;
@@ -38,18 +37,13 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
         private readonly colorizer: NgeMonacoColorizerService,
     ) {}
 
-    ngAfterViewInit() {
-        this.observer = new MutationObserver(this.colorize.bind(this));
-        this.observer.observe(this.transclusion.nativeElement, {
-            subtree: true,
-            childList: true,
-            characterData: true,
-        });
-        this.colorize();
-    }
-
     ngOnChanges(): void {
-        this.colorize();
+        const code = this
+            .transclusion
+            .nativeElement
+            .textContent?.trim()
+            || this.code || '';
+        this.colorize(code);
     }
 
     ngOnDestroy() {
@@ -58,19 +52,9 @@ export class NgeMonacoViewerComponent implements AfterViewInit, OnChanges, OnDes
         this.subscriptions.forEach(s => s.unsubscribe());
     }
 
-    private async colorize() {
-        if (!this.container || !this.transclusion) {
-            return;
-        }
-
-        const code = this
-            .transclusion
-            .nativeElement
-            .textContent?.trim()
-            || this.code;
-
+    private async colorize(code: string) {
         await this.colorizer.colorizeElement({
-            code,
+            code: code || '',
             element: this.container.nativeElement,
             lines: this.lines,
             language: this.language,
