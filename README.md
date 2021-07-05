@@ -1,5 +1,7 @@
 # Getting started
 
+> **This is no longer supported, please consider using [@mcisse/nge](https://github.com/mciissee/nge) instead**
+
 nge-monaco is an [Angular](https://angular.io) library that allow you to use [Monaco Editor](https://microsoft.github.io/monaco-editor/) in your projects.
 
 ## Demonstration
